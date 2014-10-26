@@ -6,12 +6,18 @@ public class Device {
 	
 	private int id;
 	private boolean discovered;
+	private boolean leaf;
+	int treeLevel;
 	private ArrayList<Trace> connections;
+	
 	
 	
 	public Device(int ID){
 		this.id = ID;
 		this.discovered = false;
+		this.leaf = false;
+		this.treeLevel = -1;
+		this.connections = new ArrayList<Trace>();
 	}
 	
 	
@@ -19,13 +25,24 @@ public class Device {
 		return id;
 	}
 	
+	public void setLevel(int level){
+		treeLevel = level;
+	}
+	
+	public int getLevel(){
+		return treeLevel;
+	}
+	
 	public void setConnections(ArrayList<Trace> conn){
-		connections = new ArrayList<Trace>();
 		connections.addAll(conn);
 	}
 	
 	public void pushConnect(Trace conn){
 		connections.add(conn);
+	}
+	
+	public void destroyConnect(Trace conn){
+		connections.remove(conn);
 	}
 	
 	public ArrayList<Trace> getConnections(){
@@ -38,6 +55,24 @@ public class Device {
 	
 	public boolean isDiscovered(){
 		return discovered;
+	}
+	
+	public void notLeaf(){
+		leaf = false;
+	}
+	
+	public void setLeaf(){
+		leaf = true;
+	}
+	
+	public boolean isLeaf(){
+		return leaf;
+	}
+	
+	public boolean equals(Device other){
+		if(other.getId() == id){
+			return true;
+		}else{return false;}
 	}
 
 }

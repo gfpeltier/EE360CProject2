@@ -12,4 +12,17 @@ public class Trace {
 		time = T;
 	}
 	
+	
+	public Device getTo(){
+		return devI;
+	}
+	
+	public Device getFrom(){
+		return devJ;
+	}
+	
+	public int getTime(){
+		return time;
+	}
+	
 }
