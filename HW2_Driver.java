@@ -83,8 +83,10 @@ public class HW2_Driver {
 		ArrayList<ArrayList<Device>> levels = new ArrayList<ArrayList<Device>>();		// Array to hold arrays for each level of graph
 		ArrayList<Device> primary = new ArrayList<Device>();
 		primary.add(devs[src]);
+		int currentTime = tSent;
 		levels.add(primary);
 		devs[src].setDiscovered();		// need to set src device as discovered
+		devs[src].setMessage(tSent);
 		int layerCount = 0;
 		devs[src].setLevel(layerCount);
 		ArrayList<Trace> tree = new ArrayList<Trace>();
@@ -96,10 +98,11 @@ public class HW2_Driver {
 				while(it.hasNext()){
 					Trace tmp = it.next();
 					if(tmp.getFrom().equals(levels.get(layerCount).get(k))){		// Trace incident from current device
-						if(!tmp.getTo().isDiscovered() && tmp.getTime() >= tSent && tmp.getTime() <= tRec){
+						if(!tmp.getTo().isDiscovered() && tmp.getTime() >= tmp.getFrom().getMessage() && tmp.getTime() <= tRec){
 							if(tmp.getFrom().getId() == dest || tmp.getTo().getId() == dest){
 								destReached = true;
 							}
+							tmp.getTo().setMessage(tmp.getTime());
 							tree.add(tmp);
 							tmp.getFrom().notLeaf();
 							tmp.getTo().setLeaf();
@@ -107,13 +110,14 @@ public class HW2_Driver {
 							tmp.getTo().setLevel(layerCount + 1);
 							tempLayer.add(tmp.getTo());
 						}else{
-							tmp.getFrom().destroyConnect(tmp);			// Get rid of unused connection
+							//tmp.getFrom().destroyConnect(tmp);			// Get rid of unused connection
 						}
 					}else if(tmp.getTo().equals(levels.get(layerCount).get(k))){	// Trace incident to current device
-						if(!tmp.getFrom().isDiscovered() && tmp.getTime() >= tSent && tmp.getTime() <= tRec){
+						if(!tmp.getFrom().isDiscovered() && tmp.getTime() >= tmp.getTo().getMessage() && tmp.getTime() <= tRec){
 							if(tmp.getFrom().getId() == dest || tmp.getTo().getId() == dest){
 								destReached = true;
 							}
+							tmp.getFrom().setMessage(tmp.getTime());
 							tree.add(tmp);
 							tmp.getTo().notLeaf();
 							tmp.getFrom().setLeaf();
@@ -121,7 +125,7 @@ public class HW2_Driver {
 							tmp.getFrom().setLevel(layerCount + 1);
 							tempLayer.add(tmp.getFrom());
 						}else{
-							tmp.getTo().destroyConnect(tmp);			// Get rid of unused connection
+							//tmp.getTo().destroyConnect(tmp);			// Get rid of unused connection
 						}
 					}
 				}
@@ -168,7 +172,7 @@ public class HW2_Driver {
 		Iterator<Trace> it = path.iterator();
 		while(it.hasNext()){
 			Trace tmp = it.next();
-			out.add(tmp.getFrom().getId() + " "+ tmp.getTo().getId() + " " + tmp.getTime());
+			out.add(tmp.getTo().getId() + " "+ tmp.getFrom().getId() + " " + tmp.getTime());
 		}
 		return out;
 	}

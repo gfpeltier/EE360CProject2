@@ -7,6 +7,7 @@ public class Device {
 	private int id;
 	private boolean discovered;
 	private boolean leaf;
+	private int message;
 	int treeLevel;
 	private ArrayList<Trace> connections;
 	
@@ -16,6 +17,7 @@ public class Device {
 		this.id = ID;
 		this.discovered = false;
 		this.leaf = false;
+		this.message = 1000000;
 		this.treeLevel = -1;
 		this.connections = new ArrayList<Trace>();
 	}
@@ -31,6 +33,14 @@ public class Device {
 	
 	public int getLevel(){
 		return treeLevel;
+	}
+	
+	public void setMessage(int time){
+		if(time < message){message = time;}
+	}
+	
+	public int getMessage(){
+		return message;
 	}
 	
 	public void setConnections(ArrayList<Trace> conn){
