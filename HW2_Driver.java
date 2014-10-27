@@ -145,9 +145,9 @@ public class HW2_Driver {
 	
 	
 	public static ArrayList<Trace> cleanTree(ArrayList<Trace> tree, int src, int dest, int numLayers){
-		//ArrayList<Trace> clean = new ArrayList<Trace>();
+		ArrayList<Trace> clean = new ArrayList<Trace>();
 		ListIterator<Trace> it = tree.listIterator(tree.size());
-		while(it.hasPrevious()){
+		/*while(it.hasPrevious()){
 			Trace tmp = it.previous();
 			if((tmp.getFrom().isLeaf() && tmp.getFrom().getLevel() < numLayers)||(tmp.getTo().isLeaf() && tmp.getTo().getLevel() < numLayers)){
 				tmp.getFrom().setLeaf();
@@ -156,8 +156,35 @@ public class HW2_Driver {
 			}else if((tmp.getFrom().getLevel() == numLayers && tmp.getFrom().getId() != dest)&&(tmp.getTo().getLevel() == numLayers && tmp.getTo().getId() != dest)){
 				tree.remove(tmp);
 			}
-		}
-		return tree;
+		}*/
+		if(it.hasPrevious()){
+			Trace tmp = it.previous();
+			while((tmp.getFrom().getId() != dest) && (tmp.getTo().getId() != dest) && it.hasPrevious()){		// Iterate until you get to the first trace that reaches destination
+				tmp = it.previous();
+			}
+			clean.add(tmp);		// Add last trace
+			Device currentDev;
+			if(tmp.getFrom().getId() == dest){
+				currentDev = tmp.getTo();
+			}else{
+				currentDev = tmp.getFrom();
+			}
+			int currentLayer = numLayers - 1;
+			while(it.hasPrevious()){
+				tmp = it.previous();
+				if((tmp.getFrom().equals(currentDev) || tmp.getTo().equals(currentDev)) && (tmp.getFrom().getLevel() == (currentLayer) || tmp.getTo().getLevel() == (currentLayer))){
+					clean.add(0, tmp);
+					if(tmp.getFrom().equals(currentDev)){
+						currentDev = tmp.getTo();
+					}else{
+						currentDev = tmp.getFrom();
+					}
+					currentLayer--;
+				}
+				
+			}
+		}else{System.out.println("Error: Empty tree passed to be cleaned");}
+		return clean;
 	}
 	
 	
